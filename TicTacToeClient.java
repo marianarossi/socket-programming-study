@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class TicTacToeClient {
 
     public void start() throws Exception {
-        Socket socket = new Socket("192.168.2.191", 2025);
+        Socket socket = new Socket("192.168.2.100", 2025);
         DataInputStream in = new DataInputStream(socket.getInputStream());
         DataOutputStream out = new DataOutputStream(socket.getOutputStream());
         Scanner scanner = new Scanner(System.in);
