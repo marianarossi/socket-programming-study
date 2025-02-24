@@ -1,154 +1,156 @@
-## Tutorial: Implementação do Jogo da Velha com Sockets TCP em Java
+## Implementation of Tic Tac Toe using TCP Sockets in Java
 
 ---
 
-## Visão Geral
+## Overview
 
-Neste projeto, implementamos um jogo da velha utilizando comunicação em rede por meio de sockets TCP. A ideia é que o servidor atue como árbitro, gerenciando o estado do tabuleiro e a lógica do jogo, enquanto dois clientes se conectam ao servidor para jogar. Cada cliente representa um jogador (Player 1 com o símbolo **X** e Player 2 com o símbolo **O**).  
-O servidor envia atualizações do tabuleiro e mensagens de controle (por exemplo, "Sua vez", "Vencedor", "Empate") para os clientes, que por sua vez enviam suas jogadas (um número de 1 a 9 representando a posição no tabuleiro).
-
----
-
-## Estrutura dos Arquivos
-
-O projeto é composto por dois arquivos principais:
-
-1. `TicTacToeServer.java` – Código do servidor.
-2. `TicTacToeClient.java` – Código do cliente.
+In this project, we implemented a tic tac toe game using network communication via TCP sockets. The idea is that the server acts as the referee, managing the board state and game logic, while two clients connect to the server to play. Each client represents a player (Player 1 with the **X** symbol and Player 2 with the **O** symbol).  
+The server sends board updates and control messages (for example, "Your turn", "Winner", "Draw") to the clients, who in turn send their moves (a number from 1 to 9 representing the board position).
 
 ---
 
-## Detalhes da Implementação
+## File Structure
 
-### 1. Código do Servidor (`TicTacToeServer.java`)
+The project consists of two main files:
 
-**Funcionamento:**
-
-- **Criação do Socket do Servidor:**  
-  O servidor utiliza a classe `ServerSocket` para escutar conexões na porta 2025.
-
-- **Aceitação de Conexões:**  
-  O servidor aguarda e aceita duas conexões, uma para cada jogador. Assim que um cliente se conecta, ele é designado como Player 1 (símbolo **X**) e o próximo como Player 2 (símbolo **O**).
-
-- **Inicialização do Tabuleiro:**  
-  O tabuleiro é representado por um array de caracteres com nove posições, inicialmente preenchidas pelos números 1 a 9 (para facilitar a visualização das posições).
-
-- **Loop do Jogo:**  
-  Em cada iteração:
-  - O servidor envia o estado atual do tabuleiro para ambos os clientes.
-  - Identifica de quem é a vez (começando com o Player 1).
-  - Envia uma mensagem de `YOUR_TURN` (sua vez) para o jogador ativo e `OPPONENT_TURN` para o outro.
-  - Recebe a jogada do jogador ativo e valida se a jogada é válida (posição entre 1 e 9 e célula não ocupada).
-  - Atualiza o tabuleiro com a jogada válida.
-  - Verifica se houve vitória ou empate. Se sim, envia a mensagem final (por exemplo, `WIN`, `LOSE` ou `DRAW`) e encerra o jogo.
-  - Caso contrário, alterna o turno para o outro jogador e repete o processo.
-
-- **Fechamento das Conexões:**  
-  Ao final do jogo, o servidor fecha todos os fluxos (input/output) e as conexões dos sockets, além de encerrar o `ServerSocket`.
+1. `TicTacToeServer.java` – Server code.
+2. `TicTacToeClient.java` – Client code.
 
 ---
 
-### 2. Código do Cliente (`TicTacToeClient.java`)
+## Implementation Details
 
-**Funcionamento:**
+### 1. Server Code (`TicTacToeServer.java`)
 
-- **Conexão com o Servidor:**  
-  O cliente se conecta ao servidor na porta 2025. Se os dois clientes estiverem em máquinas diferentes, é necessário alterar o IP de conexão (consulte a seção abaixo sobre "Como rodar o cliente em um computador diferente").
+**How it Works:**
 
-- **Recepção de Mensagens:**  
-  Assim que a conexão for estabelecida, o cliente recebe uma mensagem de boas-vindas e, durante o jogo, o servidor envia mensagens com o estado do tabuleiro, indica quando é a vez do jogador e mensagens de controle (por exemplo, `YOUR_TURN`, `OPPONENT_TURN`, `WIN`, `LOSE`, `DRAW`).
+- **Server Socket Creation:**  
+  The server uses the `ServerSocket` class to listen for connections on port 2025.
 
-- **Entrada da Jogada:**  
-  Quando o cliente recebe a mensagem `YOUR_TURN`, ele solicita que o usuário digite sua jogada (um número de 1 a 9) e envia essa jogada para o servidor.
+- **Accepting Connections:**  
+  The server waits for and accepts two connections, one for each player. Once a client connects, it is designated as Player 1 (symbol **X**) and the next as Player 2 (symbol **O**).
 
-- **Loop de Comunicação:**  
-  O cliente fica num loop lendo as mensagens do servidor e respondendo conforme necessário. Quando o jogo termina (vitória, derrota ou empate), o loop é encerrado.
+- **Board Initialization:**  
+  The board is represented by a character array with nine positions, initially filled with the numbers 1 to 9 (to help visualize the positions).
 
-- **Fechamento da Conexão:**  
-  Após o término do jogo, os streams e o socket são fechados.
+- **Game Loop:**  
+  In each iteration:
+  - The server sends the current board state to both clients.
+  - It identifies whose turn it is (starting with Player 1).
+  - It sends a `YOUR_TURN` message to the active player and an `OPPONENT_TURN` message to the other.
+  - It receives the move from the active player and validates whether the move is valid (position between 1 and 9 and cell not already occupied).
+  - It updates the board with the valid move.
+  - It checks if there is a win or a draw. If so, it sends the final message (for example, `WIN`, `LOSE`, or `DRAW`) and ends the game.
+  - Otherwise, it alternates the turn to the other player and repeats the process.
+
+- **Closing Connections:**  
+  At the end of the game, the server closes all streams (input/output) and the socket connections, as well as the `ServerSocket`.
 
 ---
 
-## Passo a Passo: Compilação e Execução
+### 2. Client Code (`TicTacToeClient.java`)
 
-### Passo 1: Preparação dos Arquivos
+**How it Works:**
 
-- **Salve os arquivos:**
-  - `TicTacToeServer.java` – Código do servidor.
-  - `TicTacToeClient.java` – Código do cliente.
-- Certifique-se de que ambos os arquivos estejam na mesma pasta.
+- **Connecting to the Server:**  
+  The client connects to the server on port 2025. If the two clients are on different machines, you must change the connection IP (see the section below on [How to Run the Client on a Different Computer](#how-to-run-the-client-on-a-different-computer).
 
-### Passo 2: Compilação
 
-1. Abra um terminal (ou prompt de comando) e navegue até a pasta onde os arquivos foram salvos.
-2. Compile os arquivos Java executando:
+- **Receiving Messages:**  
+  Once the connection is established, the client receives a welcome message and, during the game, the server sends messages with the board state, indicates when it is the player's turn, and sends control messages (for example, `YOUR_TURN`, `OPPONENT_TURN`, `WIN`, `LOSE`, `DRAW`).
+
+- **Inputting the Move:**  
+  When the client receives the `YOUR_TURN` message, it prompts the user to enter their move (a number from 1 to 9) and sends that move to the server.
+
+- **Communication Loop:**  
+  The client remains in a loop reading messages from the server and responding as needed. When the game ends (win, loss, or draw), the loop terminates.
+
+- **Closing the Connection:**  
+  After the game ends, the streams and the socket are closed.
+
+---
+
+## Step by Step: Compilation and Execution
+
+### Step 1: Preparing the Files
+
+- **Save the files:**
+  - `TicTacToeServer.java` – Server code.
+  - `TicTacToeClient.java` – Client code.
+- Make sure that both files are in the same folder.
+
+### Step 2: Compilation
+
+1. Open a terminal (or command prompt) and navigate to the folder where the files are saved.
+2. Compile the Java files by executing:
    ```bash
    javac TicTacToeServer.java TicTacToeClient.java
-Isso irá gerar os arquivos `.class` correspondentes.
 
-## Passo 3: Execução do Servidor
+This will generate the corresponding `.class` files.
 
-1. **Inicie o Servidor:**
-   - No terminal, execute:
+## Step 3: Running the Server
+
+1. **Start the Server:**
+   - In the terminal, execute:
      ```bash
      java TicTacToeServer
      ```
-   - Você verá mensagens como “Tic Tac Toe Server está rodando na porta 2025” e “Aguardando Player 1…”, indicando que o servidor está aguardando conexões.
+   - You will see messages such as “Tic Tac Toe Server is running on port 2025” and “Waiting for Player 1…”, indicating that the server is waiting for connections.
 
-## Passo 4: Execução dos Clientes
+## Step 4: Running the Clients
 
-1. **Em duas janelas de terminal diferentes (ou em máquinas distintas):**
-   - Abra uma janela e execute:
+1. **In two different terminal windows (or on different machines):**
+   - Open one window and execute:
      ```bash
      java TicTacToeClient
      ```
-     Esse cliente será designado como Player 1 (símbolo **X**).
-   - Abra outra janela e execute:
+     This client will be designated as Player 1 (symbol **X**).
+   - Open another window and execute:
      ```bash
      java TicTacToeClient
      ```
-     Esse cliente será designado como Player 2 (símbolo **O**).
+     This client will be designated as Player 2 (symbol **O**).
 
-## Passo 5: Jogo em Ação
+## Step 5: Game in Action
 
-1. **Interação dos Clientes:**
-   - Cada cliente exibirá o estado atual do tabuleiro e mensagens informando se é a vez do jogador ou se o oponente está jogando.
-   - Quando receber a mensagem “YOUR_TURN” (Sua vez), o cliente solicitará que o usuário digite um número entre 1 e 9 para marcar sua jogada.
-   - O servidor atualiza o tabuleiro com a jogada válida e envia o novo estado para ambos os clientes.
-   - O processo se repete até que um jogador vença ou o jogo termine em empate.
+1. **Client Interaction:**
+   - Each client will display the current state of the board and messages indicating whether it is the player's turn or if the opponent is playing.
+   - When receiving the “YOUR_TURN” (Your turn) message, the client will prompt the user to enter a number between 1 and 9 to mark their move.
+   - The server updates the board with the valid move and sends the new state to both clients.
+   - This process repeats until a player wins or the game ends in a draw.
 
-2. **Finalização:**
-   - Ao final do jogo, o servidor envia mensagens “WIN” (vencedor), “LOSE” (perdedor) ou “DRAW” (empate) e encerra a conexão.
-   - Os clientes exibem a mensagem final e fecham a conexão.
+2. **Finalization:**
+   - At the end of the game, the server sends “WIN” (winner), “LOSE” (loser), or “DRAW” (draw) messages and closes the connection.
+   - The clients display the final message and close the connection.
 
-## Como Rodar o Cliente em um Computador Diferente
+## How to Run the Client on a Different Computer
 
-1. **Obtenha o IP do Servidor:**
-   - No computador que está rodando o servidor, verifique o endereço IP da máquina (por exemplo, `192.168.1.100`).
+1. **Obtain the Server's IP:**
+   - On the computer running the server, check the machine's IP address (for example, `192.168.1.100`).
 
-2. **Alterar o Código do Cliente:**
-   - No arquivo `TicTacToeClient.java`, altere a linha que cria o socket:
+2. **Modify the Client Code:**
+   - In the file `TicTacToeClient.java`, change the line that creates the socket:
      ```java
      Socket socket = new Socket("127.0.0.1", 2025);
      ```
-     para:
+     to:
      ```java
      Socket socket = new Socket("192.168.1.100", 2025);
      ```
-     substituindo `"192.168.1.100"` pelo endereço IP real do servidor.
+     replacing `"192.168.1.100"` with the actual IP address of the server.
 
-3. **Recompile o Cliente:**
-   - Após a alteração, compile novamente:
+3. **Recompile the Client:**
+   - After the change, compile again:
      ```bash
      javac TicTacToeClient.java
      ```
 
-4. **Execute o Cliente na Máquina Diferente:**
-   - No terminal do computador cliente, execute:
+4. **Run the Client on a Different Computer:**
+   - In the terminal of the client computer, execute:
      ```bash
      java TicTacToeClient
      ```
-     O cliente se conectará ao servidor usando o IP especificado.
+     The client will connect to the server using the specified IP.
 
-5. **Verifique Conectividade:**
-   - Certifique-se de que não existam bloqueios de firewall ou problemas de rede que impeçam a conexão na porta 2025.
+5. **Verify Connectivity:**
+   - Make sure there are no firewall restrictions or network issues that might block the connection on port 2025.
