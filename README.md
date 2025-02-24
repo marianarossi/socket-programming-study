@@ -4,8 +4,9 @@
 
 ## Overview
 
-In this project, we implemented a tic tac toe game using network communication via TCP sockets. The idea is that the server acts as the referee, managing the board state and game logic, while two clients connect to the server to play. Each client represents a player (Player 1 with the **X** symbol and Player 2 with the **O** symbol).  
-The server sends board updates and control messages (for example, "Your turn", "Winner", "Draw") to the clients, who in turn send their moves (a number from 1 to 9 representing the board position).
+This project features a Tic Tac Toe game that uses TCP sockets for network communication. The server acts as the referee, managing the board state and game logic, while two clients connect to participate in the match. One client represents Player 1 (using the X symbol), and the other represents Player 2 (using the O symbol).
+
+Throughout the game, the server broadcasts board updates and control messages (such as "Your turn", "Winner", or "Draw") to the clients, and each client sends its moves (a number from 1 to 9 indicating the board position) back to the server.
 
 ---
 
